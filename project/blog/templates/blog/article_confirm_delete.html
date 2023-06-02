@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block main %}
+
+<div class="d-flex justify-content-center mt-4">
+    <form action="" method="post">
+        {% csrf_token %}
+        <p class="text-dark">
+            Вы дейсвительно хотите удалить статью с названием "{{ article.title }}" ?
+        </p>
+        <input type="submit" value="Да удалить" class="btn list-group-item-danger btn-outline-danger mx-1">
+        <a href="{{ article.get_absolute_url }}" class="btn list-group-item-warning btn-outline-warning mx-1">Назад</a>
+    </form>
+</div>
+
+
+{% endblock main %}

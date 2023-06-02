@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block main %}
+
+
+<div class="d-flex justify-content-between">
+
+    <div class="col-9">
+        <div class="card">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card_category">
+                    <a href="" class="h4 text-dark navbar-brand fs-4">Категория:{{ article.category }}</a>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    {% if article.author == request.user %}
+                    <a href="{% url 'update' article.pk %}"
+                       class="btn list-group-item-success btn-outline-success mx-1">Изменить</a>
+                    <a href="{% url 'delete' article.pk %}" class="btn list-group-item-danger btn-outline-danger mx-1">Удалить</a>
+                    {% endif %}5
+                    <a href="{% url 'index' %}" class="btn list-group-item-warning btn-outline-warning mx-1">Назад</a>
+                </div>
+            </div>
+
+            <div class="card-body">
+                {% if article.photo %}
+                <img src="{{ article.photo.url }}" class="card-img-top" alt="...">
+                {% else %}
+                <img src="https://www.dhresource.com/600x600/f2/albu/g10/M00/F7/59/rBVaWV3MH4WAf9l1AAC_B9Tcguw370.jpg"
+                     class="card-img-top" alt="...">
+                {% endif %}
+
+                <div class="d-flex justify-content-between p-4">
+                    <div class="d-flex justify-content-between">
+                        <img src="https://cdn2.tgramsearch.com/images/a/a/aab84aad1bab2da018788ae2e21b353d.jpg"
+                             width="50" height="50" alt="">
+
+                        <h4 class="p-2">Автор:
+                            <a href="{% url 'profile' article.author.pk %}" class="text-success navbar-brand"> {{ article.author }} </a>
+                        </h4>
+                    </div>
+                    <p>{{ article.created_at }}</p>
+                </div>
+
+                <h2>{{ article.title }}</h2>
+                <p>{{ article.content|linebreaks }}</p>
+                <span class="bi bi-eye-fill"> {{ article.views }}</span>
+            </div>
+
+
+        </div>
+
+        <div class="card mt-4 p-2">
+            {% if request.user.is_authenticated %}
+            <form action="{% url 'save_comment' article.pk %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit" class="btn btn-secondary">Оставить коментарий</button>
+            </form>
+            {% else %}
+            <h5>Что бы оставить коментарий <a class="link-success navbar-brand" href="{% url 'login' %}">Войдите в
+                аккаунт</a></h5>
+            {% endif %}
+        </div>
+
+        {% for comment in comments %}
+        <div class="card mt-4 p-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="comment_info">
+                    <h4>{{ comment.user.username }}</h4>
+                    <p class="small">{{ comment.created_at }}</p>
+                    <p>{{ comment.text }}</p>
+                </div>
+                {% if request.user == comment.user %}
+                <a href="{% url 'comment_delete' comment.pk article.pk %}"
+                   class="link-danger navbar-brand fs-5 fw-bold">Удалить</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+
+    <div class="col-3">
+
+    </div>
+
+
+</div>
+{% endblock main %}
